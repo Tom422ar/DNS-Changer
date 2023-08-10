@@ -1,0 +1,45 @@
+import subprocess
+import tkinter as tk
+from tkinter import messagebox
+
+def configure_dns(dns1, dns2):
+    try:
+        subprocess.run(['netsh', 'interface', 'ipv4', 'set', 'dns', 'name="Wi-Fi"', 'static', dns1, 'both'])
+        subprocess.run(['netsh', 'interface', 'ipv4', 'add', 'dns', 'name="Wi-Fi"', dns2, 'index=2'])
+        messagebox.showinfo("تنظیم DNS", "DNS سرورها با موفقیت تنظیم شدند.")
+    except Exception as e:
+        messagebox.showerror("خطا", f"خطا در تنظیم DNS سرورها: {e}")
+
+def reset_dns():
+    try:
+        subprocess.run(['netsh', 'interface', 'ipv4', 'delete', 'dns', 'name="Wi-Fi"', 'all'])
+        messagebox.showinfo("بازگردانی تنظیمات DNS", "تنظیمات DNS به حالت پیش‌فرض بازگردانی شدند.")
+    except Exception as e:
+        messagebox.showerror("خطا", f"خطا در بازگرداندن تنظیمات DNS: {e}")
+
+def configure_dns_gui():
+    window = tk.Tk()
+    window.title("تنظیم DNS")
+
+    label1 = tk.Label(window, text="DNS اول:")
+    label1.pack()
+
+    dns1_entry = tk.Entry(window)
+    dns1_entry.pack()
+
+    label2 = tk.Label(window, text="DNS دوم:")
+    label2.pack()
+
+    dns2_entry = tk.Entry(window)
+    dns2_entry.pack()
+
+    configure_button = tk.Button(window, text="تنظیم DNS", command=lambda: configure_dns(dns1_entry.get(), dns2_entry.get()))
+    configure_button.pack()
+
+    reset_button = tk.Button(window, text="بازگردانی به حالت پیش‌فرض", command=reset_dns)
+    reset_button.pack()
+
+    window.mainloop()
+
+if __name__ == "__main__":
+    configure_dns_gui()
